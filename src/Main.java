@@ -7,6 +7,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jh on 2014-07-19.
@@ -28,11 +30,10 @@ public class Main {
                 sb.append(tmp);
             }
             System.out.println(sb.toString());
-
             br.close();
 
 
-            JSONArray docs;
+
 
             JSONObject jsonHead = new JSONObject(sb.toString());
             JSONObject header = (JSONObject)jsonHead.get("response");
@@ -40,27 +41,45 @@ public class Main {
             JSONObject items = (JSONObject)body.get("items");
 
 
+            JSONArray docs;
+            JSONArray resDocs = new JSONArray();
 
+            Map<String, Boolean> checkMap = new HashMap<String, Boolean>();
+            checkMap.put("POP", false); //강수확률
+            checkMap.put("R06", false); //강수량
+            checkMap.put("T3H", false); //기온
+            checkMap.put("WAV", false); //파고
 
 
             docs = items.getJSONArray("item");
+
+            JSONObject resItem = new JSONObject();
+            resItem.put("WHERE", "Haeundae"); //어느 해수욕장?
             for (int i=0; i<docs.length(); i++) {
                 JSONObject item = (JSONObject)docs.get(i);
 
-                item.remove("nx");
-                item.remove("ny");
-                item.put("position", "Haeundae");
+                for( String key : checkMap.keySet() ) {
+                    if (checkMap.get(key)) {
+                        continue;
+                    }
+
+                    if(item.get("category").equals(key)) { //강수확률
+                        resItem.put(key, item.get("fcstValue"));
+                        checkMap.put(key, true);
+                    } else {
+                        resItem.put(key, -1);
+                    }
+                }
             }
+            resDocs.put(resItem);
 
+            String csvString = CDL.toString(resDocs);
 
-
-            String csvString = CDL.toString(docs);
-
+            /*
             BufferedWriter file = new BufferedWriter(new FileWriter("weather"+".csv"));
             file.write(csvString);
             file.close();
-
-
+            */
 
             System.out.println(csvString);
         } catch (MalformedURLException e) {
