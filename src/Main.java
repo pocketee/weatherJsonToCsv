@@ -49,7 +49,7 @@ public class Main {
 
                 item.remove("nx");
                 item.remove("ny");
-                item.append("position", "Haeundae");
+                item.put("position", "Haeundae");
             }
 
 
