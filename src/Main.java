@@ -39,16 +39,29 @@ public class Main {
             JSONObject body = (JSONObject)header.get("body");
             JSONObject items = (JSONObject)body.get("items");
 
-            System.out.println(items.toString());
-            System.out.println();
+
+
+
 
             docs = items.getJSONArray("item");
+            for (int i=0; i<docs.length(); i++) {
+                JSONObject item = (JSONObject)docs.get(i);
 
+                item.remove("nx");
+                item.remove("ny");
+                item.append("position", "Haeundae");
+            }
+
+
+
+            String csvString = CDL.toString(docs);
 
             BufferedWriter file = new BufferedWriter(new FileWriter("weather"+".csv"));
-            String csvString = CDL.toString(docs);
             file.write(csvString);
             file.close();
+
+
+
             System.out.println(csvString);
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
