@@ -17,8 +17,9 @@ import java.util.Map;
  * Created by jh on 2014-07-19.
  */
 public class WeatherItemReader {
-    public static JSONObject getItemFromURL(String where, String date, String time) {
-        String urlStr = "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService/ForecastSpaceData?ServiceKey=PNqRUudJI%2FP5DZOFlscONuFOafdaqBZQ0LbQmlLM7eYFrUuQMh4svcDy9lD5WpIX3vBZFYLcRGoYhocI5ARq5A%3D%3D&base_date=20140715&base_time=1400&nx=100&ny=75&_type=json";
+    public static JSONObject getItemFromURL(String where, String baseDate, String baseTime) {
+        String urlStr = "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService/ForecastSpaceData?ServiceKey=PNqRUudJI%2FP5DZOFlscONuFOafdaqBZQ0LbQmlLM7eYFrUuQMh4svcDy9lD5WpIX3vBZFYLcRGoYhocI5ARq5A%3D%3D";
+        urlStr += "&base_date=" + baseDate + "&base_time=" + baseTime + "&nx=100&ny=75" + "&_type=json";
         JSONObject resItem = new JSONObject();
 
         try {
@@ -39,8 +40,21 @@ public class WeatherItemReader {
 
 
             JSONObject jsonHead = new JSONObject(sb.toString());
-            JSONObject header = (JSONObject)jsonHead.get("response");
-            JSONObject body = (JSONObject)header.get("body");
+            JSONObject response = (JSONObject)jsonHead.get("response");
+            JSONObject body = (JSONObject)response.get("body");
+            System.out.println(body.get("totalCount"));
+            if (body.getInt("totalCount") == 0) { //아무 자료 없는 것이므로 모든 자료 missing으로 표시
+                resItem.put("WHERE", where); //어느 해수욕장?
+                resItem.put("BASEDATE", baseDate); //날짜
+                resItem.put("BASETIME", baseTime); //시간
+                resItem.put("POP", -1);
+                resItem.put("R06", -1);
+                resItem.put("T3H", -50);
+                resItem.put("WAV", -1);
+
+                return resItem;
+            }
+
             JSONObject items = (JSONObject)body.get("items");
 
 
@@ -70,11 +84,15 @@ public class WeatherItemReader {
                 }
             }
 
+
             resItem.put("WHERE", where); //어느 해수욕장?
-            resItem.put("DATE", date);      //날짜
-            resItem.put("TIME", time);      //시간
-
-
+            /*
+            JSONObject tmpJSONObject = (JSONObject)docs.get(0);
+            resItem.put("BASEDATE", tmpJSONObject.get("fcstDate")); //날짜
+            resItem.put("BASETIME", tmpJSONObject.get("fcstTime")); //시간
+            */
+            resItem.put("BASEDATE", baseDate); //날짜
+            resItem.put("BASETIME", baseTime); //시간
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

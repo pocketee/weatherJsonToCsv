@@ -18,7 +18,7 @@ public class Main {
 
         try {
             JSONArray resDocs = new JSONArray();
-            JSONObject item = WeatherItemReader.getItemFromURL("Haeundae", "201400715", "1800");
+            JSONObject item = WeatherItemReader.getItemFromURL("Haeundae", "20140714", "1000");
             resDocs.put(item);
 
             String csvString = CDL.toString(resDocs);
