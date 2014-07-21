@@ -19,7 +19,7 @@ import java.util.Map;
 public class WeatherItemReader {
     public static JSONObject getItemFromURL(String where, String baseDate, String baseTime) {
         String urlStr = "http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService/ForecastSpaceData?ServiceKey=PNqRUudJI%2FP5DZOFlscONuFOafdaqBZQ0LbQmlLM7eYFrUuQMh4svcDy9lD5WpIX3vBZFYLcRGoYhocI5ARq5A%3D%3D";
-        urlStr += "&base_date=" + baseDate + "&base_time=" + baseTime + "&nx=100&ny=75" + "&_type=json";
+        urlStr += "&base_date=" + baseDate.toString() + "&base_time=" + baseTime.toString() + "&nx=100&ny=75" + "&_type=json";
         JSONObject resItem = new JSONObject();
 
         try {
@@ -28,14 +28,14 @@ public class WeatherItemReader {
             InputStream is = conn.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             char[] buff = new char[512];
-            int len = -1;
+            int len;
 
             StringBuilder sb = new StringBuilder("");
             while( (len = br.read(buff)) != -1) {
                 String tmp = new String(buff, 0, len);
                 sb.append(tmp);
             }
-            System.out.println(sb.toString());
+            //System.out.println(sb.toString());
             br.close();
 
 
