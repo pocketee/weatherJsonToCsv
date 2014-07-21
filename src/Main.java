@@ -14,12 +14,12 @@ import java.time.LocalTime;
  */
 public class Main {
     public static void main(String args[]) {
-        final int DAYS_TO_PULL = 5;
+        final int DAYS_TO_PULL = 1;
 
         try {
             JSONArray resDocs = new JSONArray();
 
-            LocalDate ld = LocalDate.of(2014, 07, 15);
+            LocalDate ld = LocalDate.of(2014, 07, 19);
             LocalTime lt;
 
             String dateStr;
