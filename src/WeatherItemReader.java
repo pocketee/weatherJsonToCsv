@@ -35,6 +35,7 @@ public class WeatherItemReader {
                 String tmp = new String(buff, 0, len);
                 sb.append(tmp);
             }
+            System.out.println(sb.toString());
             br.close();
 
 

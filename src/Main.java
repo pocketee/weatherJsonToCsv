@@ -14,22 +14,23 @@ import java.time.LocalTime;
  */
 public class Main {
     public static void main(String args[]) {
-        final int DAYS_TO_PULL = 19;
+        final int DAYS_TO_PULL = 1;
 
         try {
             JSONArray resDocs = new JSONArray();
 
-            LocalDate ld = LocalDate.of(2014, 07, 01);
+            LocalDate ld = LocalDate.of(2014, 07, 18);
             LocalTime lt = LocalTime.of(0, 0);
 
             String dateStr;
             String timeStr;
             JSONObject item;
 
+            /*
             for (int i=0; i<DAYS_TO_PULL; i++) { //몇일
                 dateStr = ""+ld.plusDays(i);
-                for (int j=0; j<48; j++) { //하루루
-                    timeStr = ""+lt.plusMinutes(j*30);
+                for (int j=0; j<24; j++) { //하루루
+                    timeStr = ""+lt.plusMinutes(j*60);
                     item = WeatherItemReader.getItemFromURL("Haeundae", dateStr, timeStr);
                     if ( item == null ) {
                         continue;
@@ -37,14 +38,20 @@ public class Main {
                     resDocs.put(item);
                 }
             }
+            */
+
+            item = WeatherItemReader.getItemFromURL("Haeundae", "20140718", "1100");
+            resDocs.put(item);
 
             String csvString = CDL.toString(resDocs);
+
+
 
             BufferedWriter file = new BufferedWriter(new FileWriter("weather"+".csv"));
             file.write(csvString);
             file.close();
 
-            System.out.println("the end");
+            System.out.println("end");
         }   catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
